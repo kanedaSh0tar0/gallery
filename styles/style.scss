@@ -1,0 +1,307 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata&display=swap");
+
+$tablet: 768px;
+
+@mixin adaptiveFont($mobileSize, $desctopSize) {
+    $addedSize: $desctopSize - $mobileSize;
+    $addedSizeMobile: $addedSize * .7;
+    $layoutSize: 1840;
+
+    @media(min-width: $tablet) {
+        font-size: calc(#{$mobileSize + 'px'} + #{$addedSize} * (100vw / #{$layoutSize}));
+    }
+
+    @media(max-width: $tablet) {
+        font-size: calc(#{$mobileSize + 'px'} + #{$addedSizeMobile} * ((100vw - 320px) / #{$layoutSize}));
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: rgb(42, 42, 42);
+    color: teal;
+    font-family: "Inconsolata", monospace;
+    font-size: 26px;
+    line-height: 140%;
+}
+
+.main {
+    padding: 2.5rem 2rem;
+
+    .title {
+        @include adaptiveFont(52, 78);
+        text-transform: uppercase;
+        text-align: center;
+        margin: 0 0 3rem 0;
+        letter-spacing: 0.2em;
+    }
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+
+    .gallery__item {
+        width: 25%;
+
+        .card {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            padding: 0 0 150% 0;
+            position: relative;
+
+            &__content {
+                opacity: 0;
+                margin: 70% 0 0 0;
+                position: absolute;
+                color: teal;
+                z-index: 3;
+                transition: all 0.2s linear;
+
+                .card__title {
+                    font-size: 2rem;
+                }
+
+                .card__description {
+                    font-size: 1rem;
+                }
+            }
+
+            &__hover {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 2;
+                opacity: 0;
+                background: rgba(0, 0, 0, 0.8);
+                transition: all 0.2s linear;
+            }
+
+            &__image {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                transition: all 2s linear;
+            }
+
+            &:hover {
+                .card__content,
+                .card__hover {
+                    opacity: 1;
+                }
+
+                .card__image {
+                    transform: scale(1.1);
+                }
+
+                @media (max-width: $tablet) {
+                    .card__content,
+                    .card__hover {
+                        display: none;
+                    }
+        
+                    .card__image {
+                        transform: scale(1);
+                    }
+                }
+            }
+        }
+
+        @media(max-width: $tablet) {
+            width: 33.3333%;
+        }
+
+        @media (max-width: 500px) {
+            width: 50%;
+        }
+
+        @media (max-width: 375px) {
+            width: 100%;
+        }
+    }
+}
+
+// Modal
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgb(42, 42, 42);
+    z-index: 999;
+    color: teal;
+    opacity: 0;
+
+    &__opening {
+        display: block;
+
+        .modal__image {
+            transition: none;
+        }
+    }
+
+    &__opened {
+        display: block;
+    }
+
+    &__image {
+        position: absolute;
+        width: 500px;
+        height: auto;
+        display: block;
+        z-index: 2;
+        transition: 0.5s ease-out;
+    }
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+    width: 3rem;
+    height: 400px;
+
+    top: 0;
+    position: absolute;
+    z-index: 100;
+    right: 20%;
+    margin: 1000px 0 0 0;
+    transition: 0.7s ease-out;
+
+    &__counter {
+        font-weight: bold;
+        font-size: 2rem;
+        margin: 0 .5rem;
+    }
+
+    &__close {
+        position: absolute;
+        top: 0;
+        width: 3rem;
+        height: 3rem;
+        border: 3px solid teal;
+        border-radius: 50%;
+        background-size: 70%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url(../img/icons/close.svg);
+        cursor: pointer;
+        transition: all 0.3s ease-out;
+
+        &:hover {
+            background-color: teal;
+
+            @media(max-width: $tablet) {
+                background-color: transparent;
+            }
+        }
+    }
+
+    &__nav {
+        width: fit-content;
+        display: flex;
+        align-items: center;
+
+        .controls__btn {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: 3px solid teal;
+            background-color: transparent;
+            background-size: cover;
+            background-image: url(../img/icons/arrow.svg);
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+
+            &_next {
+                transform: rotate(180deg);
+            }
+
+            &:hover {
+                background-color: teal;
+
+                @media(max-width: $tablet) {
+                    background-color: transparent;
+                }
+            }
+
+            &:disabled {
+                pointer-events: none;
+                opacity: 0.3;
+            }
+
+            @media(max-width: $tablet) {
+                display: none;
+            }
+        }
+    }
+
+    @media(max-width: $tablet) {
+        right: 10%;
+    }
+
+    @media(max-width: 375px) {
+        right: 0;
+        width: 100%;
+        margin: -100px 0 0 0;
+        display: flex;
+        justify-content: flex-start;
+
+        &__close {
+            right: 0;
+        }
+    }
+}
+
+.summary {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    overflow: hidden;
+    z-index: 10;
+    background: rgb(20, 20, 20);
+    transition: width 0.7s ease-out;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        white-space: nowrap;
+        transition: opacity 0.3s ease-out;
+    }
+
+    &__title {
+        @include adaptiveFont(34, 56);
+        margin: 1rem 0 0 0;
+
+        @media (max-width: 375px) {
+            margin: .5rem 0 0 0;
+        }
+    }
+
+    &__description {
+        margin: 1rem 0 0 0;
+        @include adaptiveFont(20, 38);
+        color: rgb(0, 82, 82);
+
+        @media (max-width: 375px) {
+            margin: .5rem 0 0 0;
+        }
+    }
+}
